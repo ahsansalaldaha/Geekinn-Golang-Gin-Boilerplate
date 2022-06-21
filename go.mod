@@ -18,6 +18,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.8 // indirect
 	github.com/myesui/uuid v1.0.0 // indirect
 	github.com/poy/onpar v1.1.2 // indirect
+	github.com/spf13/cobra v1.5.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/twinj/uuid v1.0.0
 	github.com/ugorji/go v1.2.6 // indirect

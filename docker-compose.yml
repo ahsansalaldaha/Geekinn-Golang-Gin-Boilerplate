@@ -1,0 +1,32 @@
+version: "3.8"
+
+volumes:
+  postgres:
+  redis:
+    driver: local
+
+services:
+  server:
+    build:
+      context: .
+    depends_on:
+      - postgres
+    ports:
+      - 9000:9000
+    volumes:
+      - .:/usr/src/app:rw
+
+  postgres:
+    image: postgres:13
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis:/data

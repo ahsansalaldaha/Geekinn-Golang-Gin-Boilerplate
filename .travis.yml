@@ -5,7 +5,7 @@ go:
   - master
 
 services:
-  - redis-server
+  - redis
   - postgresql
 
 dist: trusty
