@@ -198,3 +198,15 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+## SETUP Database
+```
+psql -U postgres
+create database golang_gin_db;
+\q
+
+psql -U postgres -d golang_gin_db < database.sql;
+psql -U postgres -d golang_gin_db;
+\dt
+```
