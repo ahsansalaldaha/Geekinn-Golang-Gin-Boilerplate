@@ -209,4 +209,11 @@ create database golang_gin_db;
 psql -U postgres -d golang_gin_db < database.sql;
 psql -U postgres -d golang_gin_db;
 \dt
+\q
 ```
+
+## ROAD MAP
+- [ ] Add Validator https://github.com/go-ozzo/ozzo-validation
+- [ ] Add Migration https://github.com/pressly/goose
+- [ ] Add ORM https://github.com/go-gorm/gorm
+
