@@ -215,8 +215,9 @@ psql -U postgres -d golang_gin_db;
 ## ROAD MAP
 - [x] Add Validator https://github.com/go-ozzo/ozzo-validation 
 - [x] Add Live Reload
-- [ ] Add Migration https://github.com/pressly/goose
 - [ ] Add ORM https://github.com/go-gorm/gorm
+- [ ] Add ORM Logger
+- [ ] Add Migration https://github.com/pressly/goose
 - [ ] Add GO KIT 
 
 

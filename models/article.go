@@ -1,42 +1,57 @@
 package models
 
 import (
-	"errors"
-
 	"github.com/Massad/gin-boilerplate/db"
 	"github.com/Massad/gin-boilerplate/forms"
+	"gorm.io/gorm"
 )
 
 //Article ...
 type Article struct {
-	ID        int64    `db:"id, primarykey, autoincrement" json:"id"`
-	UserID    int64    `db:"user_id" json:"-"`
-	Title     string   `db:"title" json:"title"`
-	Content   string   `db:"content" json:"content"`
-	UpdatedAt int64    `db:"updated_at" json:"updated_at"`
-	CreatedAt int64    `db:"created_at" json:"created_at"`
-	User      *JSONRaw `db:"user" json:"user"`
+	gorm.Model
+	ID        int64    `gorm:"primaryKey"`
+	UserID    int64
+	Title     string
+	Content   string
+	UpdatedAt int64    `gorm:"autoUpdateTime"`
+	CreatedAt int64	   `gorm:"autoCreateTime"`
 }
 
 //ArticleModel ...
 type ArticleModel struct{}
 
+func (m ArticleModel) Migrate(){
+	db.GetDB().AutoMigrate(&Article{})
+}
+
 //Create ...
 func (m ArticleModel) Create(userID int64, form forms.CreateArticleForm) (articleID int64, err error) {
-	err = db.GetDB().QueryRow("INSERT INTO public.article(user_id, title, content) VALUES($1, $2, $3) RETURNING id", userID, form.Title, form.Content).Scan(&articleID)
-	return articleID, err
+
+	article := Article{Title: form.Title, Content: form.Content, UserID: userID}
+	if dbc := db.GetDB().Create(&article); dbc.Error != nil {
+		return articleID, dbc.Error
+	}else{
+		return article.ID, dbc.Error
+	}
 }
 
 //One ...
 func (m ArticleModel) One(userID, id int64) (article Article, err error) {
-	err = db.GetDB().SelectOne(&article, "SELECT a.id, a.title, a.content, a.updated_at, a.created_at, json_build_object('id', u.id, 'name', u.name, 'email', u.email) AS user FROM public.article a LEFT JOIN public.user u ON a.user_id = u.id WHERE a.user_id=$1 AND a.id=$2 LIMIT 1", userID, id)
-	return article, err
+
+	if dbc := db.GetDB().Where("user_id = ?", userID).Where(id).First(&article); dbc.Error != nil {
+		return article, dbc.Error
+	}else{
+		return article, dbc.Error
+	}
 }
 
 //All ...
-func (m ArticleModel) All(userID int64) (articles []DataList, err error) {
-	_, err = db.GetDB().Select(&articles, "SELECT COALESCE(array_to_json(array_agg(row_to_json(d))), '[]') AS data, (SELECT row_to_json(n) FROM ( SELECT count(a.id) AS total FROM public.article AS a WHERE a.user_id=$1 LIMIT 1 ) n ) AS meta FROM ( SELECT a.id, a.title, a.content, a.updated_at, a.created_at, json_build_object('id', u.id, 'name', u.name, 'email', u.email) AS user FROM public.article a LEFT JOIN public.user u ON a.user_id = u.id WHERE a.user_id=$1 ORDER BY a.id DESC) d", userID)
-	return articles, err
+func (m ArticleModel) All(userID int64) (articles []Article, err error) {
+	if dbc := db.GetDB().Where("user_id = ?", userID).Find(&articles); dbc.Error != nil {
+		return articles, dbc.Error
+	}else{
+		return articles, nil
+	}
 }
 
 //Update ...
@@ -47,15 +62,9 @@ func (m ArticleModel) Update(userID int64, id int64, form forms.UpdateArticleFor
 	if err != nil {
 		return err
 	}
-
-	operation, err := db.GetDB().Exec("UPDATE public.article SET title=$2, content=$3 WHERE id=$1", id, form.Title, form.Content)
-	if err != nil {
-		return err
-	}
-
-	success, _ := operation.RowsAffected()
-	if success == 0 {
-		return errors.New("updated 0 records")
+	var articleObj Article
+	if dbc := db.GetDB().Model(&articleObj).Where(id).Where("user_id",userID).Updates(Article{Title: form.Title, Content: form.Content}); dbc.Error != nil {
+		return dbc.Error
 	}
 
 	return err
@@ -64,15 +73,9 @@ func (m ArticleModel) Update(userID int64, id int64, form forms.UpdateArticleFor
 //Delete ...
 func (m ArticleModel) Delete(userID, id int64) (err error) {
 
-	operation, err := db.GetDB().Exec("DELETE FROM public.article WHERE id=$1", id)
-	if err != nil {
-		return err
+	var articleObj Article
+	if dbc := db.GetDB().Delete(&articleObj, id); dbc.Error != nil {
+		return dbc.Error
 	}
-
-	success, _ := operation.RowsAffected()
-	if success == 0 {
-		return errors.New("no records were deleted")
-	}
-
-	return err
+	return nil
 }

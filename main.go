@@ -8,6 +8,7 @@ import (
 	"runtime"
 
 	"github.com/Massad/gin-boilerplate/controllers"
+	"github.com/Massad/gin-boilerplate/models"
 	"github.com/Massad/gin-boilerplate/db"
 	"github.com/Massad/gin-boilerplate/forms"
 	"github.com/gin-contrib/gzip"
@@ -82,7 +83,10 @@ func main() {
 
 	//Start PostgreSQL database
 	//Example: db.GetDB() - More info in the models folder
+	
 	db.Init()
+	new(models.ArticleModel).Migrate()
+	new(models.UserModel).Migrate()
 
 	//Start Redis on database 1 - it's used to store the JWT but you can use it for anythig else
 	//Example: db.GetRedis().Set(KEY, VALUE, at.Sub(now)).Err()

@@ -7,16 +7,18 @@ import (
 	"github.com/Massad/gin-boilerplate/forms"
 
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 //User ...
 type User struct {
-	ID        int64  `db:"id, primarykey, autoincrement" json:"id"`
-	Email     string `db:"email" json:"email"`
-	Password  string `db:"password" json:"-"`
-	Name      string `db:"name" json:"name"`
-	UpdatedAt int64  `db:"updated_at" json:"-"`
-	CreatedAt int64  `db:"created_at" json:"-"`
+	gorm.Model
+	ID        int64    `gorm:"primaryKey"`
+	Email     string
+	Password  string
+	Name      string
+	UpdatedAt int64    `gorm:"autoUpdateTime"`
+	CreatedAt int64	   `gorm:"autoCreateTime"`
 }
 
 //UserModel ...
@@ -24,13 +26,15 @@ type UserModel struct{}
 
 var authModel = new(AuthModel)
 
+func (m UserModel) Migrate(){
+	db.GetDB().AutoMigrate(&User{})
+}
+
 //Login ...
 func (m UserModel) Login(form forms.LoginForm) (user User, token Token, err error) {
 
-	err = db.GetDB().SelectOne(&user, "SELECT id, email, password, name, updated_at, created_at FROM public.user WHERE email=LOWER($1) LIMIT 1", form.Email)
-
-	if err != nil {
-		return user, token, err
+	if dbc := db.GetDB().Where("email = ?", form.Email).First(&user); dbc.Error != nil {
+		return user, token, dbc.Error
 	}
 
 	//Compare the password form and database if match
@@ -60,16 +64,19 @@ func (m UserModel) Login(form forms.LoginForm) (user User, token Token, err erro
 
 //Register ...
 func (m UserModel) Register(form forms.RegisterForm) (user User, err error) {
-	getDb := db.GetDB()
-
-	//Check if the user exists in database
-	checkUser, err := getDb.SelectInt("SELECT count(id) FROM public.user WHERE email=LOWER($1) LIMIT 1", form.Email)
+	
+	var exists bool
+	err = db.GetDB().Model(user).
+			Select("count(*) > 0").
+			Where("email = ?", form.Email).
+			Find(&exists).
+			Error
+	
 	if err != nil {
 		return user, errors.New("something went wrong, please try again later")
 	}
-
-	if checkUser > 0 {
-		return user, errors.New("email already exists")
+	if exists {
+		return user, errors.New("Email already exists")
 	}
 
 	bytePassword := []byte(form.Password)
@@ -78,20 +85,28 @@ func (m UserModel) Register(form forms.RegisterForm) (user User, err error) {
 		return user, errors.New("something went wrong, please try again later")
 	}
 
-	//Create the user and return back the user ID
-	err = getDb.QueryRow("INSERT INTO public.user(email, password, name) VALUES($1, $2, $3) RETURNING id", form.Email, string(hashedPassword), form.Name).Scan(&user.ID)
-	if err != nil {
-		return user, errors.New("something went wrong, please try again later")
+	userObj := User{Email: form.Email, Password: string(hashedPassword), Name: form.Name}
+	if dbc := db.GetDB().Create(&userObj); dbc.Error != nil {
+		return user, dbc.Error
+	}else{
+		return userObj, dbc.Error
 	}
-
-	user.Name = form.Name
-	user.Email = form.Email
-
-	return user, err
 }
 
 //One ...
 func (m UserModel) One(userID int64) (user User, err error) {
-	err = db.GetDB().SelectOne(&user, "SELECT id, email, name FROM public.user WHERE id=$1 LIMIT 1", userID)
+	
+	if dbc := db.GetDB().Where(userID).First(&user); dbc.Error != nil {
+		return user, dbc.Error
+	}
+	return user, err
+}
+
+//One by email...
+func (m UserModel) OneByEmail(email string) (user User, err error) {
+	
+	if dbc := db.GetDB().Where("email = ?", email).First(&user); dbc.Error != nil {
+		return user, dbc.Error
+	}
 	return user, err
 }
