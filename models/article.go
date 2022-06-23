@@ -40,13 +40,13 @@ func (m ArticleModel) All(userID int64) (articles []DataList, err error) {
 }
 
 //Update ...
-func (m ArticleModel) Update(userID int64, id int64, form forms.CreateArticleForm) (err error) {
+func (m ArticleModel) Update(userID int64, id int64, form forms.UpdateArticleForm) (err error) {
 	//METHOD 1
 	//Check the article by ID using this way
-	// _, err = m.One(userID, id)
-	// if err != nil {
-	// 	return err
-	// }
+	_, err = m.One(userID, id)
+	if err != nil {
+		return err
+	}
 
 	operation, err := db.GetDB().Exec("UPDATE public.article SET title=$2, content=$3 WHERE id=$1", id, form.Title, form.Content)
 	if err != nil {

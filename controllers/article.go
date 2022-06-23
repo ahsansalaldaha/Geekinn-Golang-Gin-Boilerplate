@@ -5,6 +5,7 @@ import (
 
 	"github.com/Massad/gin-boilerplate/forms"
 	"github.com/Massad/gin-boilerplate/models"
+	"github.com/go-ozzo/ozzo-validation/v4"
 
 	"net/http"
 
@@ -22,16 +23,23 @@ func (ctrl ArticleController) Create(c *gin.Context) {
 	userID := getUserID(c)
 
 	var form forms.CreateArticleForm
+	if err := c.ShouldBind(&form); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"message": "json could not be parsed", "errors": err.Error()})
+        return
+    }
 
-	if validationErr := c.ShouldBindJSON(&form); validationErr != nil {
-		message := articleForm.Create(validationErr)
-		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": message})
-		return
+	validationErr := validation.ValidateStruct(&form,
+		validation.Field(&form.Title, validation.Required, validation.Length(3, 100)),
+		validation.Field(&form.Content, validation.Required, validation.Length(3, 100)),
+	)
+	if validationErr != nil {
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message":"Article could not be created", "errors": validationErr})
+		return	
 	}
 
 	id, err := articleModel.Create(userID, form)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": "Article could not be created"})
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": "Article could not be created", "errors": err})
 		return
 	}
 
@@ -44,7 +52,7 @@ func (ctrl ArticleController) All(c *gin.Context) {
 
 	results, err := articleModel.All(userID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"Message": "Could not get articles"})
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": "Could not get articles"})
 		return
 	}
 
@@ -59,13 +67,13 @@ func (ctrl ArticleController) One(c *gin.Context) {
 
 	getID, err := strconv.ParseInt(id, 10, 64)
 	if getID == 0 || err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"Message": "Invalid parameter"})
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Invalid parameter"})
 		return
 	}
 
 	data, err := articleModel.One(userID, getID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"Message": "Article not found"})
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Article not found"})
 		return
 	}
 
@@ -80,21 +88,30 @@ func (ctrl ArticleController) Update(c *gin.Context) {
 
 	getID, err := strconv.ParseInt(id, 10, 64)
 	if getID == 0 || err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"Message": "Invalid parameter"})
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Invalid parameter"})
 		return
 	}
 
-	var form forms.CreateArticleForm
+	var form forms.UpdateArticleForm
 
-	if validationErr := c.ShouldBindJSON(&form); validationErr != nil {
-		message := articleForm.Create(validationErr)
-		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": message})
-		return
+	if err := c.ShouldBind(&form); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"message":"Article could not be updated", "errors":  err.Error()})
+        return
+    }
+
+	validationErr := validation.ValidateStruct(&form,
+		validation.Field(&form.Title, validation.When(form.Content == "", validation.Required.Error("Either Content or Title is required.")), validation.Length(3, 100)),
+		validation.Field(&form.Content, validation.When(form.Title == "", validation.Required.Error("Either Content or Title is required.")), validation.Length(3, 100)),
+		
+	)
+	if validationErr != nil {
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message":"Article could not be updated", "errors": validationErr})
+		return	
 	}
 
 	err = articleModel.Update(userID, getID, form)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"Message": "Article could not be updated"})
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": "Article could not be updated", "errors": err})
 		return
 	}
 
@@ -109,13 +126,13 @@ func (ctrl ArticleController) Delete(c *gin.Context) {
 
 	getID, err := strconv.ParseInt(id, 10, 64)
 	if getID == 0 || err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"Message": "Invalid parameter"})
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "Invalid parameter"})
 		return
 	}
 
 	err = articleModel.Delete(userID, getID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"Message": "Article could not be deleted"})
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": "Article could not be deleted"})
 		return
 	}
 
