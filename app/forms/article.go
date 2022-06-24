@@ -1,7 +1,5 @@
 package forms
 
-//ArticleForm ...
-type ArticleForm struct{}
 
 //CreateArticleForm ...
 type CreateArticleForm struct {

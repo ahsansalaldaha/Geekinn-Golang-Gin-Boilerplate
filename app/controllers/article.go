@@ -16,7 +16,6 @@ import (
 type ArticleController struct{}
 
 var articleModel = new(models.ArticleModel)
-var articleForm = new(forms.ArticleForm)
 
 //Create ...
 func (ctrl ArticleController) Create(c *gin.Context) {

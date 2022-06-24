@@ -3,6 +3,8 @@ package controllers
 import (
 	"github.com/Geekinn/go-micro/app/forms"
 	"github.com/Geekinn/go-micro/app/models"
+	"github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 
 	"net/http"
 
@@ -13,7 +15,6 @@ import (
 type UserController struct{}
 
 var userModel = new(models.UserModel)
-var userForm = new(forms.UserForm)
 
 //getUserID ...
 func getUserID(c *gin.Context) (userID int64) {
@@ -25,11 +26,21 @@ func getUserID(c *gin.Context) (userID int64) {
 func (ctrl UserController) Login(c *gin.Context) {
 	var loginForm forms.LoginForm
 
-	if validationErr := c.ShouldBindJSON(&loginForm); validationErr != nil {
-		message := userForm.Login(validationErr)
-		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": message})
-		return
+	var form forms.LoginForm
+	if err := c.ShouldBindJSON(&form); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"message": "json could not be parsed", "errors": err.Error()})
+        return
+    }
+
+	validationErr := validation.ValidateStruct(&form,
+		validation.Field(&form.Email, validation.Required, validation.Length(3, 100), is.EmailFormat),
+		validation.Field(&form.Password, validation.Required, validation.Length(3, 100)),
+	)
+	if validationErr != nil {
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message":"Invalid login details"})
+		return	
 	}
+
 
 	user, token, err := userModel.Login(loginForm)
 	if err != nil {
@@ -44,10 +55,21 @@ func (ctrl UserController) Login(c *gin.Context) {
 func (ctrl UserController) Register(c *gin.Context) {
 	var registerForm forms.RegisterForm
 
-	if validationErr := c.ShouldBindJSON(&registerForm); validationErr != nil {
-		message := userForm.Register(validationErr)
-		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": message})
-		return
+
+	var form forms.RegisterForm
+	if err := c.ShouldBindJSON(&form); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"message": "json could not be parsed", "errors": err.Error()})
+        return
+    }
+
+	validationErr := validation.ValidateStruct(&form,
+		validation.Field(&form.Name, validation.Required),
+		validation.Field(&form.Email, validation.Required, validation.Length(3, 100),is.EmailFormat),
+		validation.Field(&form.Password, validation.Required, validation.Length(3, 100)),
+	)
+	if validationErr != nil {
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message":"User could not be created", "errors": validationErr})
+		return	
 	}
 
 	user, err := userModel.Register(registerForm)

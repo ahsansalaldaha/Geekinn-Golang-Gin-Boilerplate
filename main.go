@@ -10,13 +10,11 @@ import (
 	"github.com/Geekinn/go-micro/app/controllers"
 	"github.com/Geekinn/go-micro/app/models"
 	"github.com/Geekinn/go-micro/database"
-	"github.com/Geekinn/go-micro/app/forms"
 	"github.com/gin-contrib/gzip"
 	"github.com/joho/godotenv"
 	uuid "github.com/twinj/uuid"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 )
 
 //CORSMiddleware ...
@@ -73,9 +71,6 @@ func main() {
 
 	//Start the default gin server
 	r := gin.Default()
-
-	//Custom form validator
-	binding.Validator = new(forms.DefaultValidator)
 
 	r.Use(CORSMiddleware())
 	r.Use(RequestIDMiddleware())

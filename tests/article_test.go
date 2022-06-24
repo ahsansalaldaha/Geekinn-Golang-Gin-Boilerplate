@@ -1,6 +1,3 @@
-//go:build all
-// +build all
-
 package tests
 
 import (
@@ -15,9 +12,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Geekinn/go-micro/controllers"
+	"github.com/Geekinn/go-micro/app/controllers"
 	"github.com/Geekinn/go-micro/database"
-	"github.com/Geekinn/go-micro/forms"
+	"github.com/Geekinn/go-micro/app/forms"
 	"github.com/joho/godotenv"
 
 	"github.com/gin-gonic/gin"
