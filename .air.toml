@@ -7,13 +7,14 @@ tmp_dir = "tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -o ./tmp/app/engine main.go"
+cmd = "go build  -gcflags='all=-N -l' -o ./tmp/app/engine main.go"
 # Binary file yields from `cmd`.
 bin = "tmp/app"
 
 # Customize binary.
 # This is how you start to run your application. Since my application will works like CLI, so to run it, like to make a CLI call.
-full_bin = "./tmp/app/engine http"
+#full_bin = "./tmp/app/engine http"
+full_bin = "dlv exec --accept-multiclient --log --headless --continue --listen :2345 --api-version 2 ./tmp/app/engine http"
 # This log file places in your tmp_dir.
 log = "air_errors.log"
 # Watch these filename extensions.

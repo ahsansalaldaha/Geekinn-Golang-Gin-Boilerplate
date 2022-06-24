@@ -216,6 +216,7 @@ psql -U postgres -d golang_gin_db;
 - [x] Add Validator https://github.com/go-ozzo/ozzo-validation 
 - [x] Add Live Reload
 - [x] Add GORM https://github.com/go-gorm/gorm
+- [x] Add Delve Debugger
 - [ ] Add GORM Logger
 - [ ] Remove Article
 - [ ] Change Forms to types
