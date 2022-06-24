@@ -3,8 +3,8 @@ package controllers
 import (
 	"strconv"
 
-	"github.com/Massad/gin-boilerplate/forms"
-	"github.com/Massad/gin-boilerplate/models"
+	"github.com/Geekinn/go-micro/app/forms"
+	"github.com/Geekinn/go-micro/app/models"
 	"github.com/go-ozzo/ozzo-validation/v4"
 
 	"net/http"

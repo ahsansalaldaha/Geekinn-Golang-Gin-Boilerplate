@@ -3,8 +3,8 @@ package models
 import (
 	"errors"
 
-	"github.com/Massad/gin-boilerplate/db"
-	"github.com/Massad/gin-boilerplate/forms"
+	"github.com/Geekinn/go-micro/database"
+	"github.com/Geekinn/go-micro/app/forms"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"

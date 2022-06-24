@@ -7,10 +7,10 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/Massad/gin-boilerplate/controllers"
-	"github.com/Massad/gin-boilerplate/models"
-	"github.com/Massad/gin-boilerplate/db"
-	"github.com/Massad/gin-boilerplate/forms"
+	"github.com/Geekinn/go-micro/app/controllers"
+	"github.com/Geekinn/go-micro/app/models"
+	"github.com/Geekinn/go-micro/database"
+	"github.com/Geekinn/go-micro/app/forms"
 	"github.com/gin-contrib/gzip"
 	"github.com/joho/godotenv"
 	uuid "github.com/twinj/uuid"
@@ -80,6 +80,9 @@ func main() {
 	r.Use(CORSMiddleware())
 	r.Use(RequestIDMiddleware())
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+
 
 	//Start PostgreSQL database
 	//Example: db.GetDB() - More info in the models folder
@@ -110,11 +113,16 @@ func main() {
 		/*** START Article ***/
 		article := new(controllers.ArticleController)
 
-		v1.POST("/article", TokenAuthMiddleware(), article.Create)
-		v1.GET("/articles", TokenAuthMiddleware(), article.All)
-		v1.GET("/article/:id", TokenAuthMiddleware(), article.One)
-		v1.PUT("/article/:id", TokenAuthMiddleware(), article.Update)
-		v1.DELETE("/article/:id", TokenAuthMiddleware(), article.Delete)
+		articleRoute := v1.Group("/articles")
+		articleRoute.Use(TokenAuthMiddleware())
+		{
+			articleRoute.POST("/", TokenAuthMiddleware(), article.Create)
+			articleRoute.GET("/", TokenAuthMiddleware(), article.All)
+			articleRoute.GET("/:id", TokenAuthMiddleware(), article.One)
+			articleRoute.PUT("/:id", TokenAuthMiddleware(), article.Update)
+			articleRoute.DELETE("/:id", TokenAuthMiddleware(), article.Delete)
+		}
+		
 	}
 
 	r.LoadHTMLGlob("./public/html/*")

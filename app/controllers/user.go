@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/Massad/gin-boilerplate/forms"
-	"github.com/Massad/gin-boilerplate/models"
+	"github.com/Geekinn/go-micro/app/forms"
+	"github.com/Geekinn/go-micro/app/models"
 
 	"net/http"
 

@@ -1,4 +1,4 @@
-module github.com/Massad/gin-boilerplate
+module github.com/Geekinn/go-micro
 
 go 1.14
 
