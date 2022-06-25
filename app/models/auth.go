@@ -9,7 +9,7 @@ import (
 	"time"
 	"context"
 
-	"github.com/Geekinn/go-micro/database"
+	"github.com/Geekinn/go-micro/db"
 	jwt "github.com/golang-jwt/jwt/v4"
 	uuid "github.com/twinj/uuid"
 )

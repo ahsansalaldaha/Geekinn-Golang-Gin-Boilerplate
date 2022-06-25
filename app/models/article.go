@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/Geekinn/go-micro/database"
+	"github.com/Geekinn/go-micro/db"
 	"github.com/Geekinn/go-micro/app/forms"
 	"gorm.io/gorm"
 )

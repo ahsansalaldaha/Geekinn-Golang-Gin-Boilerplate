@@ -3,7 +3,7 @@ package models
 import (
 	"errors"
 
-	"github.com/Geekinn/go-micro/database"
+	"github.com/Geekinn/go-micro/db"
 	"github.com/Geekinn/go-micro/app/forms"
 
 	"golang.org/x/crypto/bcrypt"

@@ -13,7 +13,7 @@ import (
 	"testing"
 
 	"github.com/Geekinn/go-micro/app/controllers"
-	"github.com/Geekinn/go-micro/database"
+	"github.com/Geekinn/go-micro/db"
 	"github.com/Geekinn/go-micro/app/forms"
 	"github.com/joho/godotenv"
 

@@ -10,7 +10,7 @@ import (
 	
 	"github.com/Geekinn/go-micro/app/models"
 	"github.com/Geekinn/go-micro/routes"
-	"github.com/Geekinn/go-micro/database"
+	"github.com/Geekinn/go-micro/db"
 	"github.com/Geekinn/go-micro/app/middlewares"
 	"github.com/gin-contrib/gzip"
 	"github.com/joho/godotenv"

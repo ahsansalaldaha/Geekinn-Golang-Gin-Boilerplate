@@ -30,7 +30,7 @@ func ConnectDB(dsn string) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	//dbmap.TraceOn("[gorp]", log.New(os.Stdout, "golang-gin:", log.Lmicroseconds)) //Trace database requests
+	
 	return db, nil
 }
 
