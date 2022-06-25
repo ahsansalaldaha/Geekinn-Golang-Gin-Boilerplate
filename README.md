@@ -217,7 +217,8 @@ psql -U postgres -d golang_gin_db;
 - [x] Add Live Reload
 - [x] Add GORM https://github.com/go-gorm/gorm
 - [x] Add Delve Debugger
-- [ ] Add GORM Logger
+- [x] Add GORM Logger - Already implemented
+- [ ] Upgrade Golang & Gin to the latest
 - [ ] Remove Article
 - [ ] Change Forms to types
 - [ ] Change Models to Services
