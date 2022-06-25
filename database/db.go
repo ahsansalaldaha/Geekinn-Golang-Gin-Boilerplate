@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	_redis "github.com/go-redis/redis/v7"
+	_redis "github.com/go-redis/redis/v8"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	

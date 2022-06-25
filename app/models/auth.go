@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"context"
 
 	"github.com/Geekinn/go-micro/database"
 	jwt "github.com/golang-jwt/jwt/v4"
@@ -76,15 +77,17 @@ func (m AuthModel) CreateToken(userID int64) (*TokenDetails, error) {
 
 //CreateAuth ...
 func (m AuthModel) CreateAuth(userid int64, td *TokenDetails) error {
+	ctx := context.Background()
+
 	at := time.Unix(td.AtExpires, 0) //converting Unix to UTC(to Time object)
 	rt := time.Unix(td.RtExpires, 0)
 	now := time.Now()
 
-	errAccess := db.GetRedis().Set(td.AccessUUID, strconv.Itoa(int(userid)), at.Sub(now)).Err()
+	errAccess := db.GetRedis().Set(ctx,td.AccessUUID, strconv.Itoa(int(userid)), at.Sub(now)).Err()
 	if errAccess != nil {
 		return errAccess
 	}
-	errRefresh := db.GetRedis().Set(td.RefreshUUID, strconv.Itoa(int(userid)), rt.Sub(now)).Err()
+	errRefresh := db.GetRedis().Set(ctx,td.RefreshUUID, strconv.Itoa(int(userid)), rt.Sub(now)).Err()
 	if errRefresh != nil {
 		return errRefresh
 	}
@@ -156,7 +159,8 @@ func (m AuthModel) ExtractTokenMetadata(r *http.Request) (*AccessDetails, error)
 
 //FetchAuth ...
 func (m AuthModel) FetchAuth(authD *AccessDetails) (int64, error) {
-	userid, err := db.GetRedis().Get(authD.AccessUUID).Result()
+	ctx := context.Background()
+	userid, err := db.GetRedis().Get(ctx, authD.AccessUUID).Result()
 	if err != nil {
 		return 0, err
 	}
@@ -166,7 +170,8 @@ func (m AuthModel) FetchAuth(authD *AccessDetails) (int64, error) {
 
 //DeleteAuth ...
 func (m AuthModel) DeleteAuth(givenUUID string) (int64, error) {
-	deleted, err := db.GetRedis().Del(givenUUID).Result()
+	ctx := context.Background()
+	deleted, err := db.GetRedis().Del(ctx, givenUUID).Result()
 	if err != nil {
 		return 0, err
 	}

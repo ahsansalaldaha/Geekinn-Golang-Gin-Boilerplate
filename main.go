@@ -93,29 +93,29 @@ func main() {
 	v1 := r.Group("/v1")
 	{
 		/*** START USER ***/
-		user := new(controllers.UserController)
+		userController := new(controllers.UserController)
 
-		v1.POST("/user/login", user.Login)
-		v1.POST("/user/register", user.Register)
-		v1.GET("/user/logout", user.Logout)
+		v1.POST("/user/login", userController.Login)
+		v1.POST("/user/register", userController.Register)
+		v1.GET("/user/logout", userController.Logout)
 
 		/*** START AUTH ***/
-		auth := new(controllers.AuthController)
+		authController := new(controllers.AuthController)
 
 		//Refresh the token when needed to generate new access_token and refresh_token for the user
-		v1.POST("/token/refresh", auth.Refresh)
+		v1.POST("/token/refresh", authController.Refresh)
 
 		/*** START Article ***/
-		article := new(controllers.ArticleController)
+		articleController := new(controllers.ArticleController)
 
 		articleRoute := v1.Group("/articles")
 		articleRoute.Use(TokenAuthMiddleware())
 		{
-			articleRoute.POST("/", TokenAuthMiddleware(), article.Create)
-			articleRoute.GET("/", TokenAuthMiddleware(), article.All)
-			articleRoute.GET("/:id", TokenAuthMiddleware(), article.One)
-			articleRoute.PUT("/:id", TokenAuthMiddleware(), article.Update)
-			articleRoute.DELETE("/:id", TokenAuthMiddleware(), article.Delete)
+			articleRoute.POST("/", TokenAuthMiddleware(), articleController.Create)
+			articleRoute.GET("/", TokenAuthMiddleware(), articleController.All)
+			articleRoute.GET("/:id", TokenAuthMiddleware(), articleController.One)
+			articleRoute.PUT("/:id", TokenAuthMiddleware(), articleController.Update)
+			articleRoute.DELETE("/:id", TokenAuthMiddleware(), articleController.Delete)
 		}
 		
 	}

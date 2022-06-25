@@ -218,7 +218,7 @@ psql -U postgres -d golang_gin_db;
 - [x] Add GORM https://github.com/go-gorm/gorm
 - [x] Add Delve Debugger
 - [x] Add GORM Logger - Already implemented
-- [ ] Upgrade Golang & Gin to the latest
+- [x] Upgrade Golang & Gin to the latest
 - [ ] Remove Article
 - [ ] Change Forms to types
 - [ ] Change Models to Services
@@ -230,3 +230,15 @@ psql -U postgres -d golang_gin_db;
 - [ ] Add Migration https://github.com/pressly/goose
 
 
+## Remove Unsed dependencies
+First add your upgraded dependency and then do this which will remove old dependency if the previous dependency is not being used anymore
+```
+go mod tidy -v
+```
+
+## Upgrade Go
+Run following commands to existing container
+```
+go mod edit -go=1.18
+go mod tidy -v
+```
