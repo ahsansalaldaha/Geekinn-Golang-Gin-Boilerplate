@@ -1,28 +1,22 @@
 package main
 
 import (
-	
 	"log"
 	"net/http"
 	"os"
 	"runtime"
 
-	
-	"github.com/Geekinn/go-micro/app/models"
-	"github.com/Geekinn/go-micro/routes"
-	"github.com/Geekinn/go-micro/db"
 	"github.com/Geekinn/go-micro/app/middlewares"
+	"github.com/Geekinn/go-micro/app/models"
+	"github.com/Geekinn/go-micro/db"
+	"github.com/Geekinn/go-micro/routes"
 	"github.com/gin-contrib/gzip"
 	"github.com/joho/godotenv"
-	
+
+	// ginprometheus "github.com/zsais/go-gin-prometheus"
 
 	"github.com/gin-gonic/gin"
 )
-
-
-
-
-
 
 
 func main() {
@@ -36,8 +30,12 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+
 	//Start the default gin server
 	r := gin.Default()
+
+	// p := ginprometheus.NewPrometheus("gin")
+	// p.Use(r)
 
 	r.Use(middlewares.CORSMiddleware())
 	r.Use(middlewares.RequestIDMiddleware())
@@ -60,6 +58,7 @@ func main() {
 	r.LoadHTMLGlob("./public/html/*")
 
 	r.Static("/public", "./public")
+	
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{

@@ -55,7 +55,26 @@ func (ctrl ArticleController) All(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"results": results})
+	c.JSON(http.StatusOK, results)
+}
+
+//Paginate ...
+func (ctrl ArticleController) Paginate(c *gin.Context) {
+	userID := getUserID(c)
+
+	var form forms.PaginationQuery
+	if err := c.ShouldBind(&form); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"message": "query param could not be parsed", "errors": err.Error()})
+        return
+    }
+
+	results, err := articleModel.Paginate(userID, form)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{"message": "Could not get articles"})
+		return
+	}
+
+	c.JSON(http.StatusOK, results)
 }
 
 //One ...

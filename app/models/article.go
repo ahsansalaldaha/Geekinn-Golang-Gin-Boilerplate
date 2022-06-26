@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/Geekinn/go-micro/db"
 	"github.com/Geekinn/go-micro/app/forms"
+	"github.com/Geekinn/go-micro/app/models/scopes"
 	"gorm.io/gorm"
 )
 
@@ -52,6 +53,16 @@ func (m ArticleModel) All(userID int64) (articles []Article, err error) {
 	}else{
 		return articles, nil
 	}
+}
+
+//Paginate ...
+func (m ArticleModel) Paginate(userID int64, paginationQuery forms.PaginationQuery ) (articles []Article, err error) {
+	if dbc := db.GetDB().Scopes(scopes.Paginate(paginationQuery)).Where("user_id = ?", userID).Find(&articles); dbc.Error != nil {
+		return articles, dbc.Error
+	}else{
+		return articles, nil
+	}
+	
 }
 
 //Update ...

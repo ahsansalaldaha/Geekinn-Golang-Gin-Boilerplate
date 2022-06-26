@@ -29,7 +29,8 @@ func APIRoutes(r *gin.Engine)  {
 		articleRoute.Use(middlewares.TokenAuthMiddleware())
 		{
 			articleRoute.POST("/",  articleController.Create)
-			articleRoute.GET("/",  articleController.All)
+			articleRoute.GET("/all",  articleController.All)
+			articleRoute.GET("/",  articleController.Paginate)
 			articleRoute.GET("/:id",  articleController.One)
 			articleRoute.PUT("/:id",  articleController.Update)
 			articleRoute.DELETE("/:id",  articleController.Delete)

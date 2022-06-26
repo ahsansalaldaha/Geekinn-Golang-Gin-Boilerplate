@@ -219,15 +219,11 @@ psql -U postgres -d golang_gin_db;
 - [x] Add Delve Debugger
 - [x] Add GORM Logger - Already implemented
 - [x] Upgrade Golang & Gin to the latest
-- [ ] Remove Article
-- [ ] Change Forms to types
-- [ ] Change Models to Services
-- [ ] Add Logrus Logger
+- [x] Remove Article
 - [ ] Add Prometeus Logger
+- [ ] Add Logrus Logger for file based logs
 - [ ] Add Article Pagination
 - [ ] Add HTTP Request Package
-- [ ] Add GO KIT 
-- [ ] Add Migration https://github.com/pressly/goose
 
 
 ## Remove Unsed dependencies
