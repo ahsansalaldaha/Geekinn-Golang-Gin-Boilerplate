@@ -220,7 +220,7 @@ psql -U postgres -d golang_gin_db;
 - [x] Add GORM Logger - Already implemented
 - [x] Upgrade Golang & Gin to the latest
 - [x] Remove Article
-- [ ] Add Prometeus Logger
+- [x] Add Prometeus Logger
 - [ ] Add Logrus Logger for file based logs
 - [ ] Add Article Pagination
 - [ ] Add HTTP Request Package

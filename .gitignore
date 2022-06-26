@@ -17,3 +17,5 @@ cert/
 ./gin-boilerplate
 
 tmp/*
+
+storage/logs/*.log

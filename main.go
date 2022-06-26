@@ -1,9 +1,11 @@
 package main
 
 import (
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"runtime"
 
 	"github.com/Geekinn/go-micro/app/middlewares"
@@ -16,6 +18,16 @@ import (
 	"github.com/penglongli/gin-metrics/ginmetrics"
 )
 
+func getLogWriter() (io.Writer)  {
+	logFilePath := "/usr/src/app/storage/logs/"
+    logFileName := "micro.log"
+    // Log files 	
+    fileName := path.Join(logFilePath, logFileName)	
+    // write file 	
+    // src, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, os.ModeAppend)	
+	src, _ := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	return io.MultiWriter(src)
+}
 
 func main() {
 	//Load the .env file
@@ -32,6 +44,8 @@ func main() {
 	//Start the default gin server
 	r := gin.Default()
 
+	gin.DefaultWriter = getLogWriter()
+
 	// get global Monitor object
 	m := ginmetrics.GetMonitor()
 	// +optional set metric path, default /debug/metrics
@@ -44,7 +58,7 @@ func main() {
 	// set middleware for gin
 	m.Use(r)
 
-
+	// r.Use(middlewares.LoggerToFile())
 	r.Use(middlewares.CORSMiddleware())
 	r.Use(middlewares.RequestIDMiddleware())
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
