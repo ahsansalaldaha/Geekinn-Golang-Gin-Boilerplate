@@ -11,11 +11,9 @@ import (
 	"github.com/Geekinn/go-micro/db"
 	"github.com/Geekinn/go-micro/routes"
 	"github.com/gin-contrib/gzip"
-	"github.com/joho/godotenv"
-
-	// ginprometheus "github.com/zsais/go-gin-prometheus"
-
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"github.com/penglongli/gin-metrics/ginmetrics"
 )
 
 
@@ -34,8 +32,18 @@ func main() {
 	//Start the default gin server
 	r := gin.Default()
 
-	// p := ginprometheus.NewPrometheus("gin")
-	// p.Use(r)
+	// get global Monitor object
+	m := ginmetrics.GetMonitor()
+	// +optional set metric path, default /debug/metrics
+	m.SetMetricPath("/metrics")
+	// +optional set slow time, default 5s
+	m.SetSlowTime(10)
+	// +optional set request duration, default {0.1, 0.3, 1.2, 5, 10}
+	// used to p95, p99
+	m.SetDuration([]float64{0.1, 0.3, 1.2, 5, 10})
+	// set middleware for gin
+	m.Use(r)
+
 
 	r.Use(middlewares.CORSMiddleware())
 	r.Use(middlewares.RequestIDMiddleware())
