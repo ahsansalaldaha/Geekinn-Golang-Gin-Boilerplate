@@ -206,7 +206,6 @@ psql -U postgres
 create database golang_gin_db;
 \q
 
-psql -U postgres -d golang_gin_db < database.sql;
 psql -U postgres -d golang_gin_db;
 \dt
 \q
@@ -222,7 +221,7 @@ psql -U postgres -d golang_gin_db;
 - [x] Remove Article
 - [x] Add Prometeus Logger
 - [x] Add Logrus Logger for file based logs
-- [ ] Add Article Pagination
+- [x] Add Article Pagination
 - [ ] Add HTTP Request Package
 
 

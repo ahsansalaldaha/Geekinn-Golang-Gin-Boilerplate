@@ -1,9 +1,11 @@
 package models
 
 import (
-	"github.com/Geekinn/go-micro/db"
 	"github.com/Geekinn/go-micro/app/forms"
 	"github.com/Geekinn/go-micro/app/models/scopes"
+	"github.com/Geekinn/go-micro/app/responses"
+	"github.com/Geekinn/go-micro/db"
+
 	"gorm.io/gorm"
 )
 
@@ -23,6 +25,22 @@ type ArticleModel struct{}
 
 func (m ArticleModel) Migrate(){
 	db.GetDB().AutoMigrate(&Article{})
+}
+
+//Paginate ...
+func (m ArticleModel) Paginate(userID int64, paginationQuery forms.PaginationQuery ) (paginatedResponse responses.PaginatedResponse, err error) {
+	
+	var articles []Article
+
+	query := db.GetDB().Model(&Article{}).Where("user_id = ?", userID)
+
+	if dbc := query.Scopes(scopes.Paginate(paginationQuery)).Order("id").Find(&articles); dbc.Error != nil {
+		return paginatedResponse, dbc.Error
+	}else{
+		query := db.GetDB().Model(&Article{}).Where("user_id = ?", userID)
+		return paginatedResponse.Create(articles, paginationQuery, query), nil
+	}
+	
 }
 
 //Create ...
@@ -55,15 +73,7 @@ func (m ArticleModel) All(userID int64) (articles []Article, err error) {
 	}
 }
 
-//Paginate ...
-func (m ArticleModel) Paginate(userID int64, paginationQuery forms.PaginationQuery ) (articles []Article, err error) {
-	if dbc := db.GetDB().Scopes(scopes.Paginate(paginationQuery)).Where("user_id = ?", userID).Find(&articles); dbc.Error != nil {
-		return articles, dbc.Error
-	}else{
-		return articles, nil
-	}
-	
-}
+
 
 //Update ...
 func (m ArticleModel) Update(userID int64, id int64, form forms.UpdateArticleForm) (err error) {
