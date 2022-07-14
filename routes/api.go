@@ -1,22 +1,22 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/Geekinn/go-micro/app/controllers"
 	"github.com/Geekinn/go-micro/app/middlewares"
+	"github.com/gin-gonic/gin"
 )
 
 func APIRoutes(r *gin.Engine)  {
 	v1 := r.Group("/v1")
 	{
-		/*** START USER ***/
+		/*** START USER Routes ***/
 		userController := new(controllers.UserController)
 
 		v1.POST("/user/login", userController.Login)
 		v1.POST("/user/register", userController.Register)
 		v1.GET("/user/logout", userController.Logout)
 
-		/*** START AUTH ***/
+		/*** START AUTH Routes ***/
 		authController := new(controllers.AuthController)
 
 		//Refresh the token when needed to generate new access_token and refresh_token for the user
@@ -35,6 +35,11 @@ func APIRoutes(r *gin.Engine)  {
 			articleRoute.PUT("/:id",  articleController.Update)
 			articleRoute.DELETE("/:id",  articleController.Delete)
 		}
+
+		/*** START API Routes ***/
+		apiController := new(controllers.APIController)
+		v1.GET("/api/todo", apiController.GetTodo)
+		v1.GET("/api/google", apiController.GetGoogle)
 		
 	}
 }
