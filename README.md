@@ -136,8 +136,10 @@ That's just an example, of course you can implement your own way.
 You are welcome to contribute to keep it up to date and always improving!
 
 ## Credit
-The implementation of JWT is inspired from 
-[Massad/gin-boilerplate](https://github.com/Massad/gin-boilerplate) with addition of coding structure from [Laravel](https://laravel.com/) with addition of wellknown packages for golang.
+HUGE SHOT OUT to **Massad** for inspiration.
+
+The implementation of boilerplate stems with
+[Massad/gin-boilerplate](https://github.com/Massad/gin-boilerplate) boilerplate with addition of coding structure from [Laravel](https://laravel.com/) with addition of wellknown packages for golang.
 
 The implemented JWT inspired from this article: [Using JWT for Authentication in a Golang Application](https://www.nexmo.com/blog/2020/03/13/using-jwt-for-authentication-in-a-golang-application-dr) worth reading it, thanks [Victor Steven](https://medium.com/@victorsteven)
 
