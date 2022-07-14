@@ -4,61 +4,39 @@
 
 [![Build Status](https://travis-ci.org/Massad/gin-boilerplate.svg?branch=master)](https://travis-ci.org/Massad/gin-boilerplate) [![Go Report Card](https://goreportcard.com/badge/github.com/Geekinn/go-micro)](https://goreportcard.com/report/github.com/Geekinn/go-micro)
 
-[![Join the chat at https://gitter.im/Massad/gin-boilerplate](https://badges.gitter.im/Massad/gin-boilerplate.svg)](https://gitter.im/Massad/gin-boilerplate?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Welcome to **Golang Gin boilerplate** v2
+Welcome to **Geekinn Golang Gin boilerplate**
 
-The fastest way to deploy a restful api's with [Gin Framework](https://github.com/gin-gonic/gin/) with a structured project that defaults to **PostgreSQL** database and **JWT** authentication middleware stored in **Redis**
+The fastest way to deploy a restful api's with [Gin Framework](https://github.com/gin-gonic/gin/) with a structured project that defaults to **PostgreSQL** database and **JWT** authentication middleware stored in **Redis** following Laravel structural guidelines and addition of well know golang packages.
 
 ## Configured with
 
-- [go-gorp](https://github.com/go-gorp/gorp): Go Relational Persistence
+- [gorm](https://gorm.io/): Go Relational Persistence
 - [jwt-go](https://github.com/golang-jwt/jwt): JSON Web Tokens (JWT) as middleware
 - [go-redis](https://github.com/go-redis/redis): Redis support for Go
 - Go Modules
 - Built-in **Custom Validators**
 - Built-in **CORS Middleware**
 - Built-in **RequestID Middleware**
-- Feature **PostgreSQL 12** with JSON/JSONB queries & trigger functions
 - SSL Support
 - Enviroment support
 - Unit test
+- Friendly Structure
+- **Cobra** CMD added
+- **Air** added for autoreload
+- **Dlv** added for debugging
+- Docker with Docker-compose added
+- HTTP Request Sample Attached with Circuit Breaker
+- Pagination Added
+- **Prometheus** Added
+- **Logrus** Added for access logging
 - And few other important utilties to kickstart any project
 
 ### Installation
 
 ```
-$ go get github.com/Geekinn/go-micro
+$ git clone github.com/Geekinn/go-micro
 ```
-
-```
-$ cd $GOPATH/src/github.com/Geekinn/go-micro
-```
-
-```
-$ go mod init
-```
-
-```
-$ go install
-```
-
-You will find the **database.sql** in `db/database.sql`
-
-And you can import the postgres database using this command:
-
-```
-$ psql -U postgres -h localhost < ./db/database.sql
-```
-
-Tip:
-
-You will find that we added 2 trigger functions to the dabatase:
-
-- `public.created_at_column()`
-- `public.update_at_column()`
-
-Those are added to the `updated_at` and `created_at` columns to update the latest timestamp automatically in both **user** and **article** tables. You can explore the tables and public schema for more info.
 
 ## Running Your Application
 
@@ -82,19 +60,12 @@ $ sh generate-certificate.sh
 
 > Make sure to change the values in .env for your databases
 
-```
-$ go run *.go
-```
-
-## Building Your Application
+## Running your application
 
 ```
-$ go build -v
+$ docker-compose up -d
 ```
-
-```
-$ ./gin-boilerplate
-```
+this will auto build and run the application for **DEVELOPMENT MODE**. 
 
 ## Testing Your Application
 
@@ -104,24 +75,28 @@ $ go test -v ./tests/*
 
 ## Import Postman Collection (API's)
 
-Download [Postman](https://www.getpostman.com/) -> Import -> Import From Link
+Download [Postman](https://www.getpostman.com/) -> Import 
 
-https://www.postman.com/collections/7f941b400a88ddd9c137
+Inside path **postman**
 
 Includes the following:
 
 - User
   - Login
   - Register
+  - Refresh Token
   - Logout
 - Article
   - Create
   - Update
   - Get Article
   - Get Articles
+  - Paginate Articles
   - Delete
-- Auth
-  - Refresh Token
+- API
+  - TODO
+  - Google (Http request)
+- Prometheus
 
 > In Login request in Tests tab:
 
@@ -156,21 +131,13 @@ If the API sends `401` Status Unauthorized, then you can send the `refresh_token
 
 That's just an example, of course you can implement your own way.
 
-## Version 1
-
-    No longer supported
-
-You will find the last update on v1 in [v1-session-cookies-auth](https://github.com/Geekinn/go-micro/tree/v1-session-cookies-auth) branch or [v1.0.5 release](https://github.com/Geekinn/go-micro/releases/tag/1.05) that supported the authentication using the **session** and **cookies** stored in **Redis** if needed.
-
-- [RedisStore](https://github.com/gin-gonic/contrib/tree/master/sessions): Gin middleware for session management with multi-backend support (currently cookie, Redis).
-
 ## Contribution
 
 You are welcome to contribute to keep it up to date and always improving!
 
-If you have any question or need help, drop a message at [https://gitter.im/Massad/gin-boilerplate](https://gitter.im/Massad/gin-boilerplate)
-
 ## Credit
+The implementation of JWT is inspired from 
+[Massad/gin-boilerplate](https://github.com/Massad/gin-boilerplate) with addition of coding structure from [Laravel](https://laravel.com/) with addition of wellknown packages for golang.
 
 The implemented JWT inspired from this article: [Using JWT for Authentication in a Golang Application](https://www.nexmo.com/blog/2020/03/13/using-jwt-for-authentication-in-a-golang-application-dr) worth reading it, thanks [Victor Steven](https://medium.com/@victorsteven)
 
@@ -218,12 +185,12 @@ psql -U postgres -d golang_gin_db;
 - [x] Add Delve Debugger
 - [x] Add GORM Logger - Already implemented
 - [x] Upgrade Golang & Gin to the latest
-- [x] Remove Article
 - [x] Add Prometeus Logger
 - [x] Add Logrus Logger for file based logs
 - [x] Add Article Pagination
 - [x] Add Cmd
-- [ ] Add HTTP Request Package
+- [x] Add HTTP Request Package
+- [ ] Proper Unit Testing of components
 
 
 ## Remove Unsed dependencies
