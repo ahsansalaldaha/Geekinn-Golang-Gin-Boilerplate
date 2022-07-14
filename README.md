@@ -222,6 +222,7 @@ psql -U postgres -d golang_gin_db;
 - [x] Add Prometeus Logger
 - [x] Add Logrus Logger for file based logs
 - [x] Add Article Pagination
+- [x] Add Cmd
 - [ ] Add HTTP Request Package
 
 
