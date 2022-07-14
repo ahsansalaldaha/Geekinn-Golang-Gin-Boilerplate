@@ -7,7 +7,7 @@
 
 Welcome to **Geekinn Golang Gin boilerplate**
 
-The fastest way to deploy a restful api's with [Gin Framework](https://github.com/gin-gonic/gin/) with a structured project that defaults to **PostgreSQL** database and **JWT** authentication middleware stored in **Redis** following Laravel structural guidelines and addition of well know golang packages.
+The fastest way to deploy a restful api's with [Gin Framework](https://github.com/gin-gonic/gin/) with a structured project that defaults to **PostgreSQL** database and **JWT** authentication middleware stored in **Redis** following Laravel structural guidelines and addition of wellknown golang packages.
 
 ## Configured with
 
