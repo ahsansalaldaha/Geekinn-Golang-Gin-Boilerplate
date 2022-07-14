@@ -35,7 +35,7 @@ The fastest way to deploy a restful api's with [Gin Framework](https://github.co
 ### Installation
 
 ```
-$ git clone github.com/Geekinn/go-micro
+$ git clone https://github.com/ahsansalaldaha/Geekinn-Golang-Gin-Boilerplate.git
 ```
 
 ## Running Your Application
