@@ -13,6 +13,8 @@ import (
 	"runtime"
 
 	"github.com/spf13/cobra"
+	"github.com/perimeterx/marshmallow"
+
 
 	"github.com/Geekinn/go-micro/app/middlewares"
 	"github.com/Geekinn/go-micro/app/models"
@@ -30,6 +32,8 @@ var serveCmd = &cobra.Command{
 	Short: "Starts the http server",
 	Long: `It starts the http server with all the utilities`,
 	Run: func(cmd *cobra.Command, args []string) {
+		
+		marshmallow.EnableCache() // this is used to boost performance, read more below
 		//Load the .env file
 		err := godotenv.Load(".env")
 		if err != nil {

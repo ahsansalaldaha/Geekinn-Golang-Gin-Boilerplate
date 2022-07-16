@@ -13,10 +13,10 @@ import (
 type APIController struct{}
 
 type Todo struct {
-    UserId int
-	Id int
-	Title string
-	Completed bool
+    UserId int `json:"userId"`
+	Id int `json:"id"`
+	Title string `json:"title"`
+	Completed bool `json:"completed"`
 }
 
 func (ctrl APIController) GetTodo(c *gin.Context) {
@@ -24,9 +24,11 @@ func (ctrl APIController) GetTodo(c *gin.Context) {
 	api.Init()
 	
 	todo := Todo{}
-	err := api.JSONCall("https://jsonplaceholder.typicode.com/todos/1","GET", &todo)
+	// err := api.JSONCall("https://jsonplaceholder.typicode.com/todos/1","GET", &todo)
+	err := api.MarshalJSONCall("https://jsonplaceholder.typicode.com/todos/1","GET", &todo)
 	if err != nil{
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	fmt.Print(todo)
 	c.JSON(http.StatusOK, todo)

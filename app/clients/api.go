@@ -3,9 +3,11 @@ package clients
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
+	"github.com/perimeterx/marshmallow"
 	circuit "github.com/rubyist/circuitbreaker"
 )
 
@@ -49,4 +51,15 @@ func (r *API) JSONCall(url, method string, target interface{} ) (error){
 	}
 	defer res.Body.Close()
     return json.NewDecoder(res.Body).Decode(target)
+}
+
+func (r *API) MarshalJSONCall(url, method string, target interface{} ) (error){
+	res, err := r.Call(url, method)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	respBytes,_ := io.ReadAll(res.Body)
+	_, err2 := marshmallow.Unmarshal(respBytes, target)
+	return err2
 }

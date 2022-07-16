@@ -7,17 +7,20 @@ volumes:
 
 services:
   server:
+    scale: 4
     build:
       context: .
-      dockerfile: dev.Dockerfile
+      dockerfile: Dockerfile
     depends_on:
       - postgres
-    ports:
-      - 9000:9000
-      - 2345:2345
-
     volumes:
       - .:/usr/src/app:rw
+    ports:
+      - 9000-9100:9000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.server.rule=Host(`localhost`)"
+      - "traefik.http.routers.server.entrypoints=web"
 
   postgres:
     image: postgres:13
@@ -34,3 +37,18 @@ services:
     image: redis:alpine
     volumes:
       - redis:/data
+
+  traefik:
+    image: "traefik:v2.6"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "4000:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"  
+
