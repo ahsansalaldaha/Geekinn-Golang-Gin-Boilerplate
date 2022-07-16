@@ -7,7 +7,7 @@ volumes:
 
 services:
   server:
-    scale: 4
+    scale: 1
     build:
       context: .
       dockerfile: Dockerfile
